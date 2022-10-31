@@ -21,15 +21,25 @@ app.config.from_object(Config())
 api = Api(app)
 scheduler = APScheduler()
 
+url = "http://localhost:5000/current"
 
-@scheduler.task("interval", id="do_job_1", seconds=60, misfire_grace_time=900)
+
+@scheduler.task("interval", id="do_job_1", minutes=15, misfire_grace_time=900)
 def job1():
     r = requests.get(
         f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&appid={API_key}"
     )
     resp_json = r.json()
     print(resp_json)
-    print(f'{resp_json["main"]["temp"]} C')
+    print(resp_json["main"]["temp"])
+    myobj = {
+        "temperature": resp_json["main"]["temp"],
+        "place": "Dobrich",
+        "weather_api_pk": 1
+    }
+
+    p = requests.post(url, json=myobj)
+    print(p)
 
 scheduler.add_job(func=job2, trigger="interval", seconds=10, id="do_job_2",)
 
