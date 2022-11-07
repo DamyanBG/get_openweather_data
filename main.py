@@ -21,7 +21,7 @@ app.config.from_object(Config())
 api = Api(app)
 scheduler = APScheduler()
 
-url = "http://localhost:5000/current"
+url = "http://192.168.0.189:8000/current"
 
 
 @scheduler.task("interval", id="do_job_1", minutes=15, misfire_grace_time=900)
